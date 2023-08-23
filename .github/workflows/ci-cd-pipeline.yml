@@ -39,8 +39,8 @@ jobs:
                 uses: Azure/aks-set-context@v1
                 with:                  
                   creds: '${{secrets.AZURE_CREDENTIALS}}'
-                  resource-group: TEST-RG 
-                  cluster-name: newlook
+                  resource-group: '${{variables.RG}}'
+                  cluster-name: '${{variables.CLUSTER}}'
             
             -   # Create K8s secrets to pull images
                 name: Create secret in Kubernetes cluster
