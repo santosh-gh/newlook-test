@@ -29,4 +29,4 @@ jobs:
                   context: .
                   file: ./Dockerfile
                   push: true
-                  tags: $/testapi:latest
+                  tags: $testapi:latest
