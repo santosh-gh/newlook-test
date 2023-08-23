@@ -30,4 +30,4 @@ jobs:
                   context: .
                   file: ./Dockerfile
                   push: true
-                  tags: ${{testapi:latest}}
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/testapi:latest
