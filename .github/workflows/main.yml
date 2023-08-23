@@ -22,11 +22,12 @@ jobs:
             - # create a build kit builder instance
                 name: Set up Docker Buildx
                 uses: docker/setup-buildx-action@v2
-            - # build the image and push it to Docker Hub
+            - # build the container image and push it to Docker \
+                # Hub with the name clockbox.
                 name: Build and push
                 uses: docker/build-push-action@v4
                 with:
                   context: .
                   file: ./Dockerfile
                   push: true
-                  tags: $testapi:latest
+                  tags: ${{testapi:latest}}
