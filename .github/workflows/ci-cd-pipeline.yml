@@ -1,0 +1,64 @@
+name: testapi
+
+on: 
+    push:
+        branches:
+            - "main"
+
+jobs:
+    build:
+        name: Docker image
+        runs-on: ubuntu-latest 
+        steps:
+            -   # checkout to the build machine
+                name: Checkout
+                uses: actions/checkout@v3
+
+            -   # login to Docker Hub 
+                name: Login to Docker Hub
+                uses: docker/login-action@v2
+                with:
+                  username: ${{secrets.DOCKERHUB_USERNAME }}
+                  password: ${{secrets.DOCKERHUB_TOKEN }}
+
+            -   # create a build kit builder instance
+                name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v2
+                
+            -   # build the image and push it to Docker Hub
+                name: Build and push
+                uses: docker/build-push-action@v4
+                with:
+                  context: ./testapi
+                  file: ./testapi/Dockerfile
+                  push: true
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/testapi:${{github.sha}}
+            
+            -   # Azure Kubernetes set context
+                name: Azure credentials
+                uses: Azure/aks-set-context@v1
+                with:                  
+                  creds: '${{secrets.AZURE_CREDENTIALS}}'
+                  resource-group: TEST-RG 
+                  cluster-name: newlook
+            
+            -   # Create K8s secrets to pull images
+                name: Create secret in Kubernetes cluster
+                uses: Azure/k8s-create-secret@v1.1
+                with:
+                  container-registry-url: https://hub.docker.com/repository/docker/e880613/testapi/
+                  container-registry-username: '${{secrets.DOCKERHUB_USERNAME}}'
+                  container-registry-password:  '${{secrets.DOCKERHUB_TOKEN}}'
+                  secret-type: docker-registry 
+                  secret-name: image-pull-secret
+                    
+            -   # Deploy to k8s cluster
+                name: Deploy to Kubernetes cluster
+                uses: Azure/k8s-deploy@v1
+                with:   
+                  manifests: |
+                    k8s/deployment.yml
+                    k8s/service.yml                  
+                  images: '${{secrets.DOCKERHUB_USERNAME}}/testapi:${{github.sha}}'                 
+                  imagepullsecrets: image-pull-secret
+                  action: deploy
