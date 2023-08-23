@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testapi
+spec:
+  selector:
+    matchLabels:
+      app: testapi
+  template:
+    metadata:
+      labels:
+        app: testapi
+    spec:
+      containers:
+      - name: testapi
+        image: e880613/testapi
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
