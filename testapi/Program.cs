@@ -8,7 +8,7 @@ var app = builder.Build();
 
 var summaries = new[]
 {
-    "Freezing", "Chilly", "Cool",  "Warm", "Hot"
+    "Freezing", "Cool", "Hot"
 };
 
 app.MapGet("/getweatherforecast", () =>
