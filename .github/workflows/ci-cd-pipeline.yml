@@ -42,6 +42,10 @@ jobs:
         name: Deploy image in AKS
         runs-on: ubuntu-latest 
         steps:
+            -   # checkout to the build machine
+                name: Checkout
+                uses: actions/checkout@v3
+
             -   # Azure Kubernetes set context
                 name: Azure credentials
                 uses: Azure/aks-set-context@v1
