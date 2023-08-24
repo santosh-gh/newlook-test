@@ -10,7 +10,7 @@ on:
 
 jobs:
     build:
-        name: Docker image
+        name: CI - Build Docker Image
         runs-on: ubuntu-latest 
         steps:
             -   # checkout to the build machine
@@ -39,7 +39,8 @@ jobs:
             
 
     deploy:
-        name: Deploy image in AKS
+        needs: build
+        name: CD - Deploy Docker Image in AKS
         runs-on: ubuntu-latest 
         steps:
             -   # checkout to the build machine
