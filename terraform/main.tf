@@ -13,7 +13,6 @@ terraform {
       container_name       = "tfstate"
       key                  = "test.terraform.tfstate"
   }
-
 }
 
 provider "azurerm" {
