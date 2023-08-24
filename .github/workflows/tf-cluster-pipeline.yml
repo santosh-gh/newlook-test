@@ -32,6 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     name: 'Init'
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2 
+
     - name: 'Terraform Init'    
       uses: hashicorp/terraform-github-actions@master
       with:
@@ -43,7 +46,11 @@ jobs:
     needs: Init
     runs-on: ubuntu-latest
     name: 'Validate'
+    
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2 
+
     - name: 'Terraform Validate'
       uses: hashicorp/terraform-github-actions@master
       with:
@@ -55,7 +62,10 @@ jobs:
     needs: Validate
     runs-on: ubuntu-latest
     name: 'Plan'
-    steps:      
+    steps:   
+    - name: Checkout
+      uses: actions/checkout@v2 
+   
     - name: 'Terraform Plan'
       uses: hashicorp/terraform-github-actions@master
       with:
@@ -68,6 +78,9 @@ jobs:
     runs-on: ubuntu-latest
     name: 'Apply'
     steps: 
+    - name: Checkout
+      uses: actions/checkout@v2 
+
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       uses: hashicorp/terraform-github-actions@master
