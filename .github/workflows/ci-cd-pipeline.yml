@@ -2,8 +2,10 @@ name: testapi
 
 on: 
     push:
-        branches:
-            - "main"
+      branches:
+      - "main"
+      paths:
+      - testapi
 
 jobs:
     build:
@@ -34,6 +36,11 @@ jobs:
                   push: true
                   tags: ${{ secrets.DOCKERHUB_USERNAME }}/testapi:${{github.sha}}
             
+
+    deploy:
+        name: Deploy image in AKS
+        runs-on: ubuntu-latest 
+        steps:
             -   # Azure Kubernetes set context
                 name: Azure credentials
                 uses: Azure/aks-set-context@v1
