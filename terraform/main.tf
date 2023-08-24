@@ -21,7 +21,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "TEST-RG"
+  name     = "CLUSTER-RG"
   location = "uksouth"
 }
 
