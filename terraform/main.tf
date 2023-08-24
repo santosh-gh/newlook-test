@@ -14,14 +14,14 @@ provider "azurerm" {
   features {}
 }
 
-terraform {
-    backend "azurerm" {
-        resource_group_name  = "TEST-RG"
-        storage_account_name = "newlookstg"
-        container_name       = "tfstate"
-        key                  = "test.terraform.tfstate"
-    }
+
+backend "azurerm" {
+    resource_group_name  = "TEST-RG"
+    storage_account_name = "newlookstg"
+    container_name       = "tfstate"
+    key                  = "test.terraform.tfstate"
 }
+
 
 resource "azurerm_resource_group" "rg" {
   name     = "TEST-RG"
