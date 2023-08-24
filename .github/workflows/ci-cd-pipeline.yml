@@ -1,15 +1,11 @@
 name: testapi
 
-on: 
-    
+on:     
     push:
       branches:
       - "main"
-      paths:
-      - testapi
-      - .github
     workflow_dispatch:
-        
+
 jobs:
     build:
         name: CI - Build Docker Image
