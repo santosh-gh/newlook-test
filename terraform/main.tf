@@ -8,13 +8,12 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "TEST-RG"
-    storage_account_name = "newlookstg"
-    container_name       = "tfstate"
-    key                  = "test.terraform.tfstate"
-}
+      resource_group_name  = "TEST-RG"
+      storage_account_name = "newlookstg"
+      container_name       = "tfstate"
+      key                  = "test.terraform.tfstate"
+  }
 
-  required_version = ">= 1.1.0"
 }
 
 provider "azurerm" {
