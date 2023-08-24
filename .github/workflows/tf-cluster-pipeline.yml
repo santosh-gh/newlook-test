@@ -43,12 +43,7 @@ jobs:
         tf_actions_subcommand: 'init'
         tf_actions_working_dir: "./terraform"
 
-  Validate:
-    needs: Init
-    runs-on: ubuntu-latest
-    name: 'Validate'
-    
-    steps:
+ 
     - name: Checkout
       uses: actions/checkout@v2 
 
@@ -60,7 +55,7 @@ jobs:
         tf_actions_working_dir: "./terraform"
    
   Plan:
-    needs: Validate
+    needs: Init
     runs-on: ubuntu-latest
     name: 'Plan'
     steps:   
