@@ -17,14 +17,14 @@ resources:
   - repo: self
 
 variables:
-  - name: repository
-    value: 'newlook-test'
+  - name: ImageRepository
+    value: 'e880613/api'
   - name: dockerfile
     value: '$(Build.SourcesDirectory)/newlook-test/testapi/Dockerfile'
   - name: containerRegistry
     value: 'Docker Hub'
-  - name: ImageName
-    value: 'e880613/api:$(Build.BuildId)'
+  # - name: ImageName
+  #   value: 'e880613/api:$(Build.BuildId)'
 
  
 stages:
