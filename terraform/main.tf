@@ -26,8 +26,8 @@ provider "azurerm" {
 
 resource "azurerm_kubernetes_cluster" "cluster" {
   name                = "newlook-cluster"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location  
+  resource_group_name = "example-rg"
+  location            = "uksouth"  
   dns_prefix          = "newlookcluster"
 
   default_node_pool {
