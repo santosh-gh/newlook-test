@@ -17,7 +17,7 @@ variables:
   - name: repository
     value: 'newlook-test'
   - name: dockerfile
-    value: '$(Build.SourcesDirectory)/newlook-test/testapi'
+    value: '$(Build.SourcesDirectory)/newlook-test/testapi/Dockerfile'
   - name: containerRegistry
     value: 'Docker Hub'
   - name: ImageName
