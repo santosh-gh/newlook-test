@@ -19,10 +19,10 @@ provider "azurerm" {
   features {}
 }
 
-# resource "azurerm_resource_group" "rg" {
-#   name     = "example-rg"
-#   location = "uksouth"
-# }
+resource "azurerm_resource_group" "rg" {
+  name     = "example-rg"
+  location = "uksouth"
+}
 
 resource "azurerm_kubernetes_cluster" "cluster" {
   name                = "newlook-cluster"
