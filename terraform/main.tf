@@ -8,8 +8,8 @@ terraform {
   }
 
   backend "azurerm" {
-      resource_group_name  = "TEST-RG"
-      storage_account_name = "newlookstg"
+      resource_group_name  = "example-rg"
+      storage_account_name = "newlookstg01"
       container_name       = "tfstate"
       key                  = "test.terraform.tfstate"
   }
