@@ -66,6 +66,6 @@ stages:
           inputs:
             command: buildAndPush
             repository: ${{ variables.repository }}
-            dockerfile: ${{ variables.dockerfile }}
+            dockerfile: './testapi/Dockerfile'
             containerRegistry: ${{ variables.containerRegistry }}
             tags: $(Build.BuildId)
