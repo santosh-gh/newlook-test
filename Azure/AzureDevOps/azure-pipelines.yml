@@ -12,34 +12,57 @@ trigger:
  
 pool:
   vmImage: 'ubuntu-latest'
- 
+
 variables:
-  ImageName: 'e880613/api:$(Build.BuildId)'
+  - name: repository
+    value: 'newlook-test'
+  - name: dockerfile
+    value: '$(Build.SourcesDirectory)/newlook-test/testapi'
+  - name: containerRegistry
+    value: 'Docker Hub'
+  - name: ImageName
+    value: 'e880613/api:$(Build.BuildId)'
+
  
 stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build and push Docker image
-    steps:
-    - task: Docker@1
-      displayName: 'Build the Docker image'
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Build an image'
-        dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName)'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '.'
+# - stage: Build
+#   displayName: Build image
+#   jobs:  
+#   - job: Build
+#     displayName: Build and push Docker image
+#     steps:
+#     - task: Docker@1
+#       displayName: 'Build the Docker image'
+#       inputs:
+#         containerregistrytype: 'Container Registry'
+#         dockerRegistryEndpoint: 'Docker Hub'
+#         command: 'Build an image'
+#         dockerFile: '**/Dockerfile'
+#         imageName: '$(ImageName)'
+#         includeLatestTag: true
+#         useDefaultContext: false
+#         buildContext: '.'
      
-    - task: Docker@1
-      displayName: 'Push the Docker image to Dockerhub'
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Push an image'
-        imageName: '$(ImageName)'
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+#     - task: Docker@1
+#       displayName: 'Push the Docker image to Dockerhub'
+#       inputs:
+#         containerregistrytype: 'Container Registry'
+#         dockerRegistryEndpoint: 'Docker Hub'
+#         command: 'Push an image'
+#         imageName: '$(ImageName)'
+#       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+  - stage: Build
+    displayName: Build and push stage
+    jobs:  
+      - job: Build
+        displayName: Build job
+        steps:
+        - task: Docker@2
+          displayName: Build and push an image to container registry
+          inputs:
+            command: buildAndPush
+            repository: ${{ variables.repository }}
+            dockerfile: ${{ variables.dockerfile }}
+            containerRegistry: ${{ variables.containerRegistry }}
+            tags: $(Build.BuildId)
