@@ -1,34 +1,95 @@
-trigger:
-  branches:
-    include:
-      - main
+name: $(BuildDefinitionName)_$(date:yyyyMMdd)$(rev:.r)
 
-pool:
-  vmImage: 'ubuntu-latest'
+trigger: none
 
+pr: none
+
+parameters:
+
+  - name: Action
+    displayName: Action
+    type: string
+    default: 'Plan'
+    values:
+    - Plan
+    - Apply
+    - Destroy
 
 variables:
-  - name: resourceGroupName
+  - name: backendServiceArm
+    value: 'svc-connection'
+  - name: backendAzureRmResourceGroupName
     value: 'example-rg'
-  - name: location
-    value: 'uksouth'
+  - name: backendAzureRmStorageAccountName
+    value: 'teststg890109'
+  - name: backendAzureRmContainerName
+    value: 'tfstate'
+  - name: backendAzureRmKey
+    value: 'terraform.tfstate'
+  - name: terraform_version
+    value: '1.0.10'
+  - name: action
+    value: ${{ parameters.Action }}
 
-  
+stages :   
+  - stage: terraform_plan_apply
+    condition: ne('${{ parameters.Action }}', 'Destroy')
+    jobs:
+      - job: terraform_apply
+        steps:
+          - task: TerraformInstaller@0
+            displayName: 'install'
+            inputs:
+              terraformVersion: '${{ variables.terraform_version }}'
+          - task: TerraformTaskV2@2
+            displayName: 'init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: '${{ variables.backendServiceArm }}'
+              backendAzureRmResourceGroupName: '${{ variables.backendAzureRmResourceGroupName }}'
+              backendAzureRmStorageAccountName: '${{ variables.backendAzureRmStorageAccountName }}'
+              backendAzureRmContainerName: '${{ variables.backendAzureRmContainerName }}'
+              backendAzureRmKey: '${{ variables.backendAzureRmKey }}' 
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+          - task: TerraformTaskV2@2
+            displayName: 'plan'
+            condition: and(succeeded(), eq(variables['Action'], 'Plan'))
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: '${{ variables.backendServiceArm }}'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+          - task: TerraformTaskV2@2
+            displayName: 'apply'
+            condition: and(succeeded(), eq(variables['Action'], 'Apply'))
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              environmentServiceNameAzureRM: '${{ variables.backendServiceArm }}'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.x'
-    addToPath: true
-
-- script: |
-    terraform init
-    terraform validate
-  displayName: 'Terraform Init and Validate'
-
-- script: terraform plan -out=tfplan -var="resource_group_name=$(resourceGroupName)" -var="location=$(location)"
-  displayName: 'Terraform Plan'
-
-- script: terraform apply -input=false tfplan
-  displayName: 'Terraform Apply'
-  condition: succeeded()
+  - stage: terraform_destroy
+    condition: contains('${{ parameters.Action }}', 'Destroy')
+    jobs:
+      - job: terraform_destroy
+        steps:
+          - task: TerraformTaskV2@2
+            displayName: 'init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: '${{ variables.backendServiceArm }}'
+              backendAzureRmResourceGroupName: '${{ variables.backendAzureRmResourceGroupName }}'
+              backendAzureRmStorageAccountName: '${{ variables.backendAzureRmStorageAccountName }}'
+              backendAzureRmContainerName: '${{ variables.backendAzureRmContainerName }}'
+              backendAzureRmKey: '${{ variables.backendAzureRmKey }}' 
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+          - task: TerraformTaskV2@2
+            displayName: 'destroy'
+            condition: and(succeeded(), eq(variables['action'], 'Destroy'))
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
+              environmentServiceNameAzureRM: '${{ variables.backendServiceArm }}'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
